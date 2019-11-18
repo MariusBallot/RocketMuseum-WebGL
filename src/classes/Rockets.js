@@ -3,10 +3,11 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 export default class Rocket {
 
-    constructor(scene) {
+    constructor(scene, gltfLoader, rocketId) {
         this.bind()
         this.scene = scene
-        this.loader = new GLTFLoader
+        this.loader = gltfLoader
+        this.rocketId = rocketId
         this.falcon1
         this.falconHeavy
         this.falcon9
@@ -15,24 +16,28 @@ export default class Rocket {
     }
 
     load() {
-        this.loader.load('./src/assets/rockets/scene.glb', this.loaded)
+        // this.rocketId = 'falconHeavy'
+        let url = './src/assets/rockets/' + this.rocketId + '.glb'
+        // let url = './src/assets/rockets/falcon1.glb'
+        this.loader.load(url, this.loaded)
 
     }
 
     loaded(obj) {
-        console.log(obj)
-        let s = 0.0007
-        this.falcon9 = obj.scene.children[0].clone()
-        this.falcon1 = obj.scene.children[1].clone()
-        this.falconHeavy = obj.scene.children[2].clone()
-        this.falcon9.scale.set(s, s, s)
-        this.falcon9.position.set(-0.7, -1, 0)
-        // this.falcon1.scale.set(s, s, s)
-        this.falconHeavy.scale.set(s, s, s)
-        this.rockets.add(this.falcon1, this.falcon9, this.falconHeavy)
 
-        this.scene.add(this.rockets)
+        var rocket = obj.scene
+        if (this.rocketId == 'falconHeavy') {
+            let s = 0.04
+            rocket.scale.set(s, s, s)
+            rocket.rotateY(Math.PI / 2)
+            rocket.position.set(-0.7, -0.9, 0)
+        } else {
+            let s = 0.07
+            rocket.scale.set(s, s, s)
+            rocket.position.set(-0.7, -0.8, 0)
 
+        }
+        this.scene.add(rocket)
 
 
     }

@@ -1,40 +1,49 @@
 import * as THREE from "three"
 
 import { GUI } from "three/examples/jsm/libs/dat.gui.module.js";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
-import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 
-
-import OrbitControls from "orbit-controls-es6"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
 import Grid from './Grid'
-import BillBoard from './BillBoard'
-import Rockets from './Rockets'
+import RocketSection from './RocketSection'
+import AnimationController from './AnimationController'
 
 
-class ThreeScene {
+export default class ThreeScene {
   constructor() {
     this.camera
     this.scene
     this.renderer
     this.controls
-    this.uniforms
     this.textureLoader
 
     this.grid
-    this.billBoard
-    this.rockets
+    this.rocketSections = []
+    this.rocketSectionsGroup = new THREE.Group()
 
     this.oldDate = 0
     this.newDate = 0;
     this.delta = 0
 
+    this.backbutt = document.querySelector('.back')
+    this.arrows = {
+      left: document.querySelector('.arrows .previous'),
+      right: document.querySelector('.arrows .next')
+    }
+    this.backFlag = false
+    console.log(this.arrows)
 
-    this.composer
-    this.bloomPass
+    this.raycaster = new THREE.Raycaster();
+    this.rayFlag = false
+    this.animFlag = false
+
+    this.animationController
+
+    this.mousePos = new THREE.Vector2();
+
     this.bind()
     this.init()
+
   }
 
   init() {
@@ -44,44 +53,18 @@ class ThreeScene {
     document.body.appendChild(this.renderer.domElement)
 
     this.scene = new THREE.Scene()
-    this.scene.fog = new THREE.Fog(0xFFFFFF, 8, 10)
-    this.scene.background = new THREE.Color(0xFFFFFF)
+    this.scene.fog = new THREE.Fog(0xEEEEEE, 8, 10)
+    this.scene.background = new THREE.Color(0xEEEEEE)
 
     this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000)
-    this.camera.position.set(0, 0.5, 4)
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement)
-    this.controls.enabled = true
-    this.controls.maxDistance = 1500
-    this.controls.minDistance = 0
+    this.camera.position.set(0, 0, 4)
+    // this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+    // this.controls.enabled = true
+    // this.controls.maxDistance = 1500
+    // this.controls.minDistance = 0
 
-
-    this.composer = new EffectComposer(this.renderer);
-    this.composer.addPass(new RenderPass(this.scene, this.camera));
-    this.bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 3, 1, 0.9);
-    this.composer.addPass(this.bloomPass);
 
     this.textureLoader = new THREE.TextureLoader()
-
-    var params = {
-      exposure: 1,
-      bloomStrength: 1.5,
-      bloomThreshold: 0,
-      bloomRadius: 0
-    };
-
-    var gui = new GUI();
-
-    gui.add(params, "bloomThreshold", 0.0, 1.0).onChange(value => {
-      this.bloomPass.threshold = Number(value);
-    });
-
-    gui.add(params, "bloomStrength", 0.0, 3.0).onChange(value => {
-      this.bloomPass.strength = Number(value);
-    });
-
-    gui.add(params, "bloomRadius", 0.0, 1.0).step(0.01).onChange(value => {
-      this.bloomPass.radius = Number(value);
-    });
 
     let light = new THREE.AmbientLight()
     light.intensity = 0.5
@@ -89,22 +72,49 @@ class ThreeScene {
     pointLight.position.set(10, 10, 0)
     this.scene.add(pointLight, light)
 
-    this.rockets = new Rockets(this.scene)
     this.grid = new Grid(this.scene, this.textureLoader)
-    this.billBoard = new BillBoard(this.scene, this.textureLoader, './src/assets/rocketImageTest.jpg')
+
+    let stepSize = 4;
+
+    for (let i = 0; i < 3; i++) {
+      this.rocketSections.push(new RocketSection(this.rocketSectionsGroup, this.textureLoader, "falcon9", './src/assets/rocketImageTest.jpg'))
+      this.rocketSections[i].rocketSection.position.x = stepSize * i;
+    }
+    this.scene.add(this.rocketSectionsGroup)
+    this.animationController = new AnimationController(this.rocketSectionsGroup, stepSize)
+
+    console.log(this.scene)
+
   }
 
   update() {
     // this.composer.render();
     this.renderer.render(this.scene, this.camera)
-    this.billBoard.update(this.getDelta())
+    this.camera.position.x += (this.mousePos.x / 5 - this.camera.position.x) * 0.05
+    this.camera.position.y += (-this.mousePos.y / 5 - this.camera.position.y) * 0.05
+    this.camera.lookAt(this.scene.position)
+    for (let i = 0; i < this.rocketSections.length; i++) {
+      this.rocketSections[i].update(this.getDelta())
+    }
+
+
+  }
+
+  raycast() {
+    this.rayFlag = false
+    for (let j = 0; j < 3; j++) {
+      this.raycaster.setFromCamera(this.mousePos, this.camera);
+      var intersects = this.raycaster.intersectObjects(this.scene.children[3].children[j].children);
+      for (var i = 0; i < intersects.length; i++) {
+        this.rayFlag = true
+      }
+    }
   }
 
   getDelta() {
     this.newDate = Date.now()
     this.delta = this.newDate - this.oldDate;
     this.oldDate = this.newDate;
-
     return this.delta
   }
 
@@ -115,13 +125,70 @@ class ThreeScene {
     this.camera.updateProjectionMatrix()
   }
 
+  mouseMove(e) {
+    this.mousePos.x = (e.clientX / window.innerWidth) * 2 - 1;
+    this.mousePos.y = - (e.clientY / window.innerHeight) * 2 + 1;
+
+    this.raycast()
+    if (this.rayFlag == true && this.animFlag == false) {
+      this.animationController.moveForward()
+      for (let i = 0; i < this.rocketSections.length; i++) {
+        this.rocketSections[i].mouseIn()
+      }
+      this.animFlag = true
+    }
+    if (this.rayFlag == false && this.animFlag == true) {
+      this.animationController.moveBackward()
+      for (let i = 0; i < this.rocketSections.length; i++) {
+        this.rocketSections[i].mouseOut()
+      }
+      this.animFlag = false
+    }
+  }
+
+  onClick() {
+    if (this.rayFlag) {
+      this.animationController.prezMode()
+      this.backFlag = true
+      this.rocketSections.forEach(rocketSection => {
+        rocketSection.billBoard.onClick()
+      });
+    }
+  }
+
+  backClicked() {
+    console.log('clicked')
+    if (this.backFlag) {
+      this.animationController.back()
+      this.rocketSections.forEach(rocketSection => {
+        rocketSection.billBoard.onBack()
+      });
+    }
+  }
+
   bind() {
     this.resizeCanvas = this.resizeCanvas.bind(this)
-    window.addEventListener("resize", this.resizeCanvas)
-  }
-}
+    this.mouseMove = this.mouseMove.bind(this)
+    this.onClick = this.onClick.bind(this)
+    this.backClicked = this.backClicked.bind(this)
 
-export {
-  ThreeScene as
-    default
+    window.addEventListener('resize', this.resizeCanvas)
+    window.addEventListener('mousemove', this.mouseMove)
+    window.addEventListener('click', this.onClick)
+    this.backbutt.addEventListener('click', this.backClicked)
+    document.addEventListener('keydown', (e) => {
+      if (e.keyCode == 39) {
+        this.animationController.moveToLeft()
+      } else if (e.keyCode == 37) {
+        this.animationController.moveToRight()
+      }
+    })
+
+    this.arrows.left.addEventListener('click', () => {
+      this.animationController.moveToRight()
+    })
+    this.arrows.right.addEventListener('click', () => {
+      this.animationController.moveToLeft()
+    })
+  }
 }
