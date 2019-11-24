@@ -1,34 +1,130 @@
+$allPad= 30px;
+
+body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Avenir';
+  cursor: url('/cursor.png'), auto;
+
+}
+
 * {
-    margin: 0;
-    box-sizing: border-box;
+  margin: 0;
+  box-sizing: border-box;
+}
 
-    body{
-        width: 100vw;
-        height: 100vh
-        overflow hidden
+canvas.tex {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+}
+
+.back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: $allPad;
+  transform: translate3d(0, 0, 0);
+  transition: all .3s;
+
+  img {
+    width: 50px;
+    height: auto;
+  }
+
+}
+
+.back.on {
+  transform: translate3d(-100%, 0, 0)
+}
+
+.logo {
+  position: absolute;
+  top: $allPad;
+  left: $allPad;
+  z-index: 2;
+  width: 160px;
+  height: auto;
+}
+
+.enterScreen.on {
+  opacity: 0;
+  transform: translate3d(0, -10px, 0);
+  transition: all 3s;
+  pointer-events: none;
+}
+
+.enterScreen {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .enterAction {
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: $allPad;
+
+    button {
+      background: transparent;
+      border-radius: 100px;
+      width: 50px;
+      height: 50px;
+      border: solid black 2px;
+      transform: scale(1);
+      transition: all .3s
     }
 
-
-    canvas.tex {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 3;
+    button:hover {
+      transform: scale(1.3);
+      cursor: pointer;
     }
 
-    .back{
-        position absolute
-        top:0
-        left:0
-        z-index: 2
+    button:focus {
+      outline: none;
     }
+  }
+}
 
-    .arrows{
-        display: flex;
-        align-items: center
-        justify-content: space-between
-        width: 100vw;
-        height: 100vh;
-        position: absolute
-        }
+.arrows {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: $allPad;
+
+  img {
+    width: 20px;
+    height: auto;
+    transition: all .3s;
+    transform: translate3d(0, 0, 0)
+  }
+
+  img.previous.on {
+    transform: translate3d(-300%, 0, 0)
+  }
+
+  img.next.on {
+    transform: translate3d(300%, 0, 0)
+  }
 }

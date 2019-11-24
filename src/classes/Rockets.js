@@ -26,17 +26,12 @@ export default class Rocket {
     loaded(obj) {
 
         var rocket = obj.scene
-        if (this.rocketId == 'falconHeavy') {
-            let s = 0.04
-            rocket.scale.set(s, s, s)
-            rocket.rotateY(Math.PI / 2)
-            rocket.position.set(-0.7, -0.9, 0)
-        } else {
-            let s = 0.07
-            rocket.scale.set(s, s, s)
-            rocket.position.set(-0.7, -0.8, 0)
+        let s = 0.13
+        rocket.scale.set(s, s, s)
+        rocket.rotateY(Math.PI)
+        rocket.position.set(-0.7, -0.9, 0)
+        rocket.position.set(-0.7, -0.8, 0)
 
-        }
         this.scene.add(rocket)
 
 

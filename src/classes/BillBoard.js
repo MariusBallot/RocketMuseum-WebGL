@@ -18,6 +18,8 @@ export default class Billboard {
         this.uniforms
         this.time = 0.8;
 
+        this.uvInt = new THREE.Vector2(0, 0)
+
         this.loadGrid()
     }
 
@@ -49,12 +51,17 @@ export default class Billboard {
                 type: 'f',
                 value: -1.
             },
+            u_intUv: {
+                type: 'vec2',
+                value: this.uvInt
+            },
         }
         let s = 0.5
         this.plane.scale.set(s, s, s)
         this.plane.translateY(0.3)
         this.plane.rotateX(Math.PI / 2)
         this.plane.rotateZ(Math.PI)
+        this.plane.name = 'center'
         this.plane.material = new THREE.ShaderMaterial({
             uniforms: this.uniforms,
             vertexShader: vertSource,
@@ -66,26 +73,23 @@ export default class Billboard {
 
     }
 
+    updateUv(uvInt) {
+        this.uvInt = uvInt
+        this.uniforms.u_intUv.value = uvInt
+    }
+
     mouseIn() {
 
         TweenLite.to(this.uniforms.u_h, this.time / 2, {
-            value: -4.0
-        })
-        TweenLite.to(this.uniforms.u_h, this.time / 2, {
-            value: 0,
-            delay: this.time / 2
+            value: -2.0
         })
     }
 
 
     mouseOut() {
 
-        TweenLite.to(this.uniforms.u_h, this.time / 2, {
-            value: -4.0
-        })
-        TweenLite.to(this.uniforms.u_h, this.time / 2, {
+        TweenLite.to(this.uniforms.u_h, 2, {
             value: 0,
-            delay: this.time / 2
         })
     }
 
@@ -114,6 +118,7 @@ export default class Billboard {
         this.mouseOut = this.mouseOut.bind(this)
         this.onClick = this.onClick.bind(this)
         this.onBack = this.onBack.bind(this)
+        this.updateUv = this.updateUv.bind(this)
     }
 
 

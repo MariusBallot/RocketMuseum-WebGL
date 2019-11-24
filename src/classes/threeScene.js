@@ -23,7 +23,9 @@ export default class ThreeScene {
 
     this.oldDate = 0
     this.newDate = 0;
-    this.delta = 0
+    this.delta = 0;
+
+    this.uvInt = new THREE.Vector2(0, 0)
 
     this.backbutt = document.querySelector('.back')
     this.arrows = {
@@ -71,13 +73,11 @@ export default class ThreeScene {
     let pointLight = new THREE.PointLight()
     pointLight.position.set(10, 10, 0)
     this.scene.add(pointLight, light)
-
     this.grid = new Grid(this.scene, this.textureLoader)
-
     let stepSize = 4;
 
     for (let i = 0; i < 3; i++) {
-      this.rocketSections.push(new RocketSection(this.rocketSectionsGroup, this.textureLoader, "falcon9", './src/assets/rocketImageTest.jpg'))
+      this.rocketSections.push(new RocketSection(this.rocketSectionsGroup, this.textureLoader, "falconHeavy", './src/assets/rocketImageTest.jpg'))
       this.rocketSections[i].rocketSection.position.x = stepSize * i;
     }
     this.scene.add(this.rocketSectionsGroup)
@@ -96,8 +96,6 @@ export default class ThreeScene {
     for (let i = 0; i < this.rocketSections.length; i++) {
       this.rocketSections[i].update(this.getDelta())
     }
-
-
   }
 
   raycast() {
@@ -107,6 +105,13 @@ export default class ThreeScene {
       var intersects = this.raycaster.intersectObjects(this.scene.children[3].children[j].children);
       for (var i = 0; i < intersects.length; i++) {
         this.rayFlag = true
+        if (intersects[i].object.name == 'center') {
+          this.rayFlag = true
+          this.uvInt = intersects[0].uv
+          for (let i = 0; i < this.rocketSections.length; i++) {
+            this.rocketSections[i].billBoard.updateUv(this.uvInt)
+          }
+        }
       }
     }
   }
@@ -131,14 +136,14 @@ export default class ThreeScene {
 
     this.raycast()
     if (this.rayFlag == true && this.animFlag == false) {
-      this.animationController.moveForward()
+      // this.animationController.moveForward()
       for (let i = 0; i < this.rocketSections.length; i++) {
         this.rocketSections[i].mouseIn()
       }
       this.animFlag = true
     }
     if (this.rayFlag == false && this.animFlag == true) {
-      this.animationController.moveBackward()
+      // this.animationController.moveBackward()
       for (let i = 0; i < this.rocketSections.length; i++) {
         this.rocketSections[i].mouseOut()
       }
