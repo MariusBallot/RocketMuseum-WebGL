@@ -59,7 +59,8 @@ export default class ThreeScene {
     this.scene.background = new THREE.Color(0xEEEEEE)
 
     this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000)
-    this.camera.position.set(0, 0, 4)
+    this.camera.position.set(0, 0, -1)
+    this.camera.lookAt(0, 0, this.camera.position.z - 1)
     // this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     // this.controls.enabled = true
     // this.controls.maxDistance = 1500
@@ -81,7 +82,11 @@ export default class ThreeScene {
       this.rocketSections[i].rocketSection.position.x = stepSize * i;
     }
     this.scene.add(this.rocketSectionsGroup)
-    this.animationController = new AnimationController(this.rocketSectionsGroup, stepSize)
+    this.animationController = new AnimationController(
+      this.rocketSectionsGroup,
+      stepSize,
+      this.camera,
+      this.arrows)
 
     console.log(this.scene)
 

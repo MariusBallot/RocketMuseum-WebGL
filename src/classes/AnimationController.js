@@ -1,10 +1,13 @@
 import { TweenLite } from "gsap";
 
 export default class AnimationController {
-    constructor(sections, stepSize) {
+    constructor(sections, stepSize, camera, arrows) {
         this.bind()
+        this.bindEvents();
         this.stepSize = stepSize
         this.sections = sections
+        this.arrows = arrows
+        this.camera = camera
         this.prezFlag = false
         this.positionIndex = 0;
     }
@@ -49,6 +52,19 @@ export default class AnimationController {
         }
     }
 
+    enter() {
+        if (!this.prezFlag) {
+            TweenLite.to(this.camera.position, 2, {
+                z: 4
+            })
+        }
+
+        document.querySelector('.enterScreen').classList.add('on')
+        Object.values(this.arrows).forEach(arrow => {
+            arrow.classList.remove('on')
+        });
+    }
+
     back() {
         this.prezFlag = false
         TweenLite.to(this.sections.position, 0.5, {
@@ -75,6 +91,12 @@ export default class AnimationController {
         this.moveForward = this.moveForward.bind(this)
         this.prezMode = this.prezMode.bind(this)
         this.back = this.back.bind(this)
+        this.enter = this.enter.bind(this)
+    }
+
+    bindEvents() {
+        let enterAction = document.querySelector('.enterAction')
+        enterAction.addEventListener('click', this.enter)
     }
 
 }

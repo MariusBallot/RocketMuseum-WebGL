@@ -6,6 +6,8 @@ import fragSource from '../shaders/plane.frag'
 import { TweenLite } from "gsap";
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
+import createCanvas from './createCanvas'
+
 export default class Billboard {
     constructor(scene, textureLoader, url) {
         this.bind()
@@ -16,14 +18,19 @@ export default class Billboard {
         this.texture
         this.plane
         this.uniforms
+        this.waveFlag = true
         this.time = 0.8;
+        this.planeTop = null
 
         this.uvInt = new THREE.Vector2(0, 0)
 
-        this.loadGrid()
+        this.loadTopPlane()
+        this.loadCenterPlane()
     }
 
-    loadGrid() {
+
+
+    loadCenterPlane() {
         this.fbxLoader.load('./src/assets/grid.fbx', (obj) => {
             this.createBillboard(obj.children[0])
         })
@@ -69,8 +76,18 @@ export default class Billboard {
             transparent: true
         })
         this.scene.add(this.plane)
+    }
 
+    loadTopPlane(topText) {
 
+        let tex = new THREE.CanvasTexture(createCanvas(topText, true))
+        this.planeTop = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.5), new THREE.MeshBasicMaterial({
+            map: tex,
+            transparent: true
+        }))
+        tex.needsUpdate = true
+        this.planeTop.position.set(0.55, 0.5, 0)
+        this.scene.add(this.planeTop)
     }
 
     updateUv(uvInt) {
@@ -79,10 +96,12 @@ export default class Billboard {
     }
 
     mouseIn() {
-
+        if (!this.waveFlag) return
+        this.waveFlag = false
         TweenLite.to(this.uniforms.u_h, this.time / 2, {
             value: -2.0
         })
+        console.log(this.waveFlag)
     }
 
 
@@ -90,6 +109,9 @@ export default class Billboard {
 
         TweenLite.to(this.uniforms.u_h, 2, {
             value: 0,
+            onComplete: () => {
+                this.waveFlag = true
+            }
         })
     }
 

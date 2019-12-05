@@ -1,12 +1,13 @@
-$allPad= 30px;
+$allPad = 30px;
+
+@import url('https://fonts.googleapis.com/css?family=Titillium+Web:400,700&display=swap');
 
 body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  font-family: 'Avenir';
+  font-family: 'Titillium Web', sans-serif;
   cursor: url('/cursor.png'), auto;
-
 }
 
 * {
@@ -31,17 +32,16 @@ canvas.tex {
   align-items: center;
   padding: $allPad;
   transform: translate3d(0, 0, 0);
-  transition: all .3s;
+  transition: all 0.3s;
 
   img {
     width: 50px;
     height: auto;
   }
-
 }
 
 .back.on {
-  transform: translate3d(-100%, 0, 0)
+  transform: translate3d(-100%, 0, 0);
 }
 
 .logo {
@@ -51,13 +51,6 @@ canvas.tex {
   z-index: 2;
   width: 160px;
   height: auto;
-}
-
-.enterScreen.on {
-  opacity: 0;
-  transform: translate3d(0, -10px, 0);
-  transition: all 3s;
-  pointer-events: none;
 }
 
 .enterScreen {
@@ -71,6 +64,13 @@ canvas.tex {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  &.on {
+    opacity: 0;
+    transform: translate3d(0, -10px, 0);
+    transition: all 0.3s;
+    pointer-events: none;
+  }
 
   .enterAction {
     width: 100vw;
@@ -88,7 +88,7 @@ canvas.tex {
       height: 50px;
       border: solid black 2px;
       transform: scale(1);
-      transition: all .3s
+      transition: all 0.3s;
     }
 
     button:hover {
@@ -116,15 +116,15 @@ canvas.tex {
   img {
     width: 20px;
     height: auto;
-    transition: all .3s;
-    transform: translate3d(0, 0, 0)
-  }
+    transition: all 0.3s;
+    transform: translate3d(0, 0, 0);
 
-  img.previous.on {
-    transform: translate3d(-300%, 0, 0)
-  }
+    &.previous.on {
+      transform: translate3d(-300%, 0, 0);
+    }
 
-  img.next.on {
-    transform: translate3d(300%, 0, 0)
+    &.next.on {
+      transform: translate3d(300%, 0, 0);
+    }
   }
 }
