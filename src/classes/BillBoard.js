@@ -7,6 +7,7 @@ import { TweenLite } from "gsap";
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
 import createCanvas from './createCanvas'
+import { delay } from 'q';
 
 export default class Billboard {
     constructor(scene, textureLoader, url, topText) {
@@ -19,10 +20,10 @@ export default class Billboard {
         this.plane
         this.uniforms
         this.waveFlag = true
-        this.time = 0.8;
         this.planeTop = null
 
         this.uvInt = new THREE.Vector2(0, 0)
+        this.uvEased = new THREE.Vector2(0, 0)
 
         this.loadTopPlane(topText)
         this.loadCenterPlane()
@@ -60,7 +61,7 @@ export default class Billboard {
             },
             u_intUv: {
                 type: 'vec2',
-                value: this.uvInt
+                value: this.uvEased
             },
         }
         let s = 0.5
@@ -92,14 +93,22 @@ export default class Billboard {
 
     updateUv(uvInt) {
         this.uvInt = uvInt
-        this.uniforms.u_intUv.value = uvInt
+
     }
 
     mouseIn() {
         if (!this.waveFlag) return
         this.waveFlag = false
-        TweenLite.to(this.uniforms.u_h, this.time / 2, {
+        TweenLite.to(this.uniforms.u_h, 0.3, {
             value: -2.0
+        })
+
+        TweenLite.to(this.uniforms.u_h, 4, {
+            value: 0,
+            delay: 0.3,
+            onComplete: () => {
+                this.waveFlag = true
+            }
         })
         console.log(this.waveFlag)
     }
@@ -107,12 +116,12 @@ export default class Billboard {
 
     mouseOut() {
 
-        TweenLite.to(this.uniforms.u_h, 2, {
-            value: 0,
-            onComplete: () => {
-                this.waveFlag = true
-            }
-        })
+        // TweenLite.to(this.uniforms.u_h, 2, {
+        //     value: 0,
+        //     onComplete: () => {
+        //         this.waveFlag = true
+        //     }
+        // })
     }
 
 
@@ -129,8 +138,12 @@ export default class Billboard {
     }
 
     update(delta) {
-        if (this.plane)
+        if (this.plane) {
             this.uniforms.u_delta.value += 1
+            this.uvEased.x += (this.uvInt.x - this.uvEased.x) * 0.05
+            this.uvEased.y += (this.uvInt.y - this.uvEased.y) * 0.05
+            this.uniforms.u_intUv.value = this.uvEased
+        }
     }
 
     bind() {
