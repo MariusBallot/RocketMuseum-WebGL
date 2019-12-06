@@ -13,9 +13,9 @@ export default class DataGetter {
                 let rockets = resR.data
                 let museumData = []
                 rockets.forEach(rocket => {
+                  console.log(rocket)
                   let aRocket = {
-                    rocket_name: rocket.rocket_name,
-                    rocket_id: rocket.rocket_id,
+                    rocket: rocket,
                     missions: []
                   }
                   launches.forEach(launch => {

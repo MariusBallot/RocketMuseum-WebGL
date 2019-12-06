@@ -35,7 +35,6 @@ export default class ThreeScene {
       right: document.querySelector('.arrows .next')
     }
     this.backFlag = false
-    console.log(this.arrows)
 
     this.raycaster = new THREE.Raycaster();
     this.rayFlag = false
@@ -79,9 +78,8 @@ export default class ThreeScene {
     this.grid = new Grid(this.scene, this.textureLoader)
     let stepSize = 4;
 
-    this.data.forEach((rocket, i) => {
-      console.log(rocket)
-      this.rocketSections.push(new RocketSection(this.rocketSectionsGroup, this.textureLoader, rocket.rocket_id, './src/assets/rocketImageTest.jpg', rocket.rocket_name))
+    this.data.forEach((section, i) => {
+      this.rocketSections.push(new RocketSection(this.rocketSectionsGroup, this.textureLoader, section.rocket.rocket_id, section.rocket.flickr_images[Math.floor(Math.random() * section.rocket.flickr_images.length)], section.rocket.rocket_name))
       this.rocketSections[i].rocketSection.position.x = stepSize * i;
     });
     this.scene.add(this.rocketSectionsGroup)

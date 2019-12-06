@@ -15,7 +15,7 @@ export default class AnimationController {
     moveToLeft() {
         if (!this.prezFlag) {
             console.log('hi')
-            if (this.positionIndex < 2) {
+            if (this.positionIndex < this.sections.children.length - 1) {
                 this.positionIndex++;
                 TweenLite.to(this.sections.position, 1, {
                     x: this.positionIndex * -this.stepSize
