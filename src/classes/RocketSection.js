@@ -6,7 +6,7 @@ import BillBoard from './BillBoard'
 import Rockets from './Rockets'
 
 export default class RocketSection {
-    constructor(scene, textureLoader, rocketId, imgUrl) {
+    constructor(scene, textureLoader, rocketId, imgUrl, topText) {
         this.bind()
         this.rocketSection = new THREE.Group()
 
@@ -16,7 +16,7 @@ export default class RocketSection {
         this.gltfLoader = new GLTFLoader()
 
         this.rockets = new Rockets(this.rocketSection, this.gltfLoader, this.rocketId)
-        this.billBoard = new BillBoard(this.rocketSection, textureLoader, this.imgUrl)
+        this.billBoard = new BillBoard(this.rocketSection, textureLoader, this.imgUrl, topText)
         this.scene.add(this.rocketSection)
     }
 

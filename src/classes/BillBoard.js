@@ -9,7 +9,7 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 import createCanvas from './createCanvas'
 
 export default class Billboard {
-    constructor(scene, textureLoader, url) {
+    constructor(scene, textureLoader, url, topText) {
         this.bind()
         this.scene = scene
         this.url = url
@@ -24,7 +24,7 @@ export default class Billboard {
 
         this.uvInt = new THREE.Vector2(0, 0)
 
-        this.loadTopPlane()
+        this.loadTopPlane(topText)
         this.loadCenterPlane()
     }
 

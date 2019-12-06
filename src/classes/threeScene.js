@@ -17,6 +17,7 @@ export default class ThreeScene {
     this.controls
     this.textureLoader
 
+
     this.grid
     this.rocketSections = []
     this.rocketSectionsGroup = new THREE.Group()
@@ -78,7 +79,7 @@ export default class ThreeScene {
     let stepSize = 4;
 
     for (let i = 0; i < 3; i++) {
-      this.rocketSections.push(new RocketSection(this.rocketSectionsGroup, this.textureLoader, "falconHeavy", './src/assets/rocketImageTest.jpg'))
+      this.rocketSections.push(new RocketSection(this.rocketSectionsGroup, this.textureLoader, "falconHeavy", './src/assets/rocketImageTest.jpg', "jejejejej"))
       this.rocketSections[i].rocketSection.position.x = stepSize * i;
     }
     this.scene.add(this.rocketSectionsGroup)
@@ -97,7 +98,7 @@ export default class ThreeScene {
     this.renderer.render(this.scene, this.camera)
     this.camera.position.x += (this.mousePos.x / 5 - this.camera.position.x) * 0.05
     this.camera.position.y += (-this.mousePos.y / 5 - this.camera.position.y) * 0.05
-    this.camera.lookAt(this.scene.position)
+    this.camera.lookAt(0, 0, this.camera.position.z - 4)
     for (let i = 0; i < this.rocketSections.length; i++) {
       this.rocketSections[i].update(this.getDelta())
     }
