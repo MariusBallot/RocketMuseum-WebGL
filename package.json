@@ -22,6 +22,7 @@
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
     "three": "^0.108.0",
+    "webfontloader": "^1.6.28",
     "webpack": "^4.31.0"
   },
   "devDependencies": {

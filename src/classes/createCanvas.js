@@ -8,10 +8,10 @@ export default function createCanvas(text, top) {
   if (top) {
     ctx.fillStyle = "#000"
     // ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-    ctx.font = 'bold 80px Avenir';
+    ctx.font = 'bold 80px Titillium Web';
     ctx.fillStyle = "#000"
   } else {
-    ctx.font = '40px Avenir';
+    ctx.font = '40px Titillium Web';
     ctx.fillStyle = "#000"
   }
   ctx.fillText(text, ctx.canvas.width, ctx.canvas.height / 2);

@@ -79,7 +79,7 @@ export default class ThreeScene {
     let stepSize = 4;
 
     for (let i = 0; i < 3; i++) {
-      this.rocketSections.push(new RocketSection(this.rocketSectionsGroup, this.textureLoader, "falconHeavy", './src/assets/rocketImageTest.jpg', "jejejejej"))
+      this.rocketSections.push(new RocketSection(this.rocketSectionsGroup, this.textureLoader, "falcon9", './src/assets/rocketImageTest.jpg', "jejejejej"))
       this.rocketSections[i].rocketSection.position.x = stepSize * i;
     }
     this.scene.add(this.rocketSectionsGroup)
