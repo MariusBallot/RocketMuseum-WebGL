@@ -1,19 +1,27 @@
 import './stylus/index.styl';
 import ThreeScene from './classes/ThreeScene'
 import WebFont from "webfontloader"
+import DataGetter from './classes/DataGetter';
+
 
 WebFont.load({
-    google: {
-        families: ['Titillium Web']
-    },
-    fontactive: () => {
-        const threeScene = new ThreeScene();
+  google: {
+    families: ['Titillium Web']
+  },
+  fontactive: () => {
 
-        function raf() {
-            requestAnimationFrame(raf)
-            threeScene.update();
-        }
+    new DataGetter(onLoaded)
+    function onLoaded(museumData) {
+      console.log(museumData)
+      const threeScene = new ThreeScene(museumData);
 
-        raf()
+      function raf() {
+        requestAnimationFrame(raf)
+        threeScene.update();
+      }
+      raf()
+
     }
+
+  }
 });

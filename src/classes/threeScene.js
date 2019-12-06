@@ -10,12 +10,13 @@ import AnimationController from './AnimationController'
 
 
 export default class ThreeScene {
-  constructor() {
+  constructor(data) {
     this.camera
     this.scene
     this.renderer
     this.controls
     this.textureLoader
+    this.data = data
 
 
     this.grid
@@ -78,10 +79,11 @@ export default class ThreeScene {
     this.grid = new Grid(this.scene, this.textureLoader)
     let stepSize = 4;
 
-    for (let i = 0; i < 3; i++) {
-      this.rocketSections.push(new RocketSection(this.rocketSectionsGroup, this.textureLoader, "falcon9", './src/assets/rocketImageTest.jpg', "jejejejej"))
+    this.data.forEach((rocket, i) => {
+      console.log(rocket)
+      this.rocketSections.push(new RocketSection(this.rocketSectionsGroup, this.textureLoader, rocket.rocket_id, './src/assets/rocketImageTest.jpg', rocket.rocket_name))
       this.rocketSections[i].rocketSection.position.x = stepSize * i;
-    }
+    });
     this.scene.add(this.rocketSectionsGroup)
     this.animationController = new AnimationController(
       this.rocketSectionsGroup,
